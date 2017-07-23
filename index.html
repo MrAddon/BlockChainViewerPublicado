@@ -1,440 +1,8 @@
 <html>
 <body>
-<script type="text/javascript">
-var your_url = 'https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=EUR';
-</script>
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script type="text/javascript">
-jQuery.ajax = (function(_ajax){
-
-    var protocol = location.protocol,
-        hostname = location.hostname,
-        exRegex = RegExp(protocol + '//' + hostname),
-        YQL = 'http' + (/^https/.test(protocol)?'s':'') + '://query.yahooapis.com/v1/public/yql?callback=?',
-        query = 'select * from html where url="{URL}" and xpath="*"';
-
-    function isExternal(url) {
-        return !exRegex.test(url) && /:\/\//.test(url);
-    }
-
-    return function(o) {
-
-        var url = o.url;
-
-        if ( /get/i.test(o.type) && !/json/i.test(o.dataType) && isExternal(url) ) {
-
-            // Manipulate options so that JSONP-x request is made to YQL
-
-            o.url = YQL;
-            o.dataType = 'json';
-
-            o.data = {
-                q: query.replace(
-                    '{URL}',
-                    url + (o.data ?
-                        (/\?/.test(url) ? '&' : '?') + jQuery.param(o.data)
-                    : '')
-                ),
-                format: 'xml'
-            };
-
-            // Since it's a JSONP request
-            // complete === success
-            if (!o.success && o.complete) {
-                o.success = o.complete;
-                delete o.complete;
-            }
-
-            o.success = (function(_success){
-                return function(data) {
-
-                    if (_success) {
-                        // Fake XHR callback.
-                        _success.call(this, {
-                            responseText: data.results[0]
-                                // YQL screws with <script>s
-                                // Get rid of them
-                                //.replace(/<script[^>]+?\/>|<script(.|\s)*?\/script>/gi, '')
-                        }, 'success');
-                    } 
-
-                };
-            })(o.success);
-
-        }
-
-        return _ajax.apply(this, arguments);
-
-    };
-
-})(jQuery.ajax);
-
-</script>
-<script>
-function refrescar() {
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/ethereum/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("eth").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("eth1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("eth_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-/*jQuery.ajax({
-            url: "https://api.uphold.com/v0/ticker/ETHEUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("eth").innerHTML= (Math.round(json.bid * 10000) / 10000)+" EUR";
-                //document.getElementById("eth1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                //if ( json.percent_change_24h[0] == "-" ) 
-                //	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                //else 
-                // 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                //document.getElementById("eth_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });  */      
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/bitcoin/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("btc").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("btc1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("btc_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-        
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/litecoin/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("ltc").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("ltc1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("ltc_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/voxels/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("vox").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("vox1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("vox_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-        
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/ethereum-classic/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("etc").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("etc1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("etc_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/ripple/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("xrp").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("xrp1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("xrp_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/monero/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("xmr").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("xmr1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("xmr_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/dash/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("dash").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("dash1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("dash_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/steem/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("steem").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("steem1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("steem_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-        
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/gnosis-gno/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("gnosis").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("gnosis1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("gnosis_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/golem-network-tokens/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("golem").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("golem1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("golem_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-        
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/augur/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("augur").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("augur1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("augur_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-        
-jQuery.ajax({
-            url: "https://api.coinmarketcap.com/v1/ticker/nem/?convert=EUR",
-            type: "GET",
-            
-            contentType: 'application/json; charset=utf-8',
-            success: function(json) {
-                var respuesta = json.responseText;
-                var rex = /(<([^>]+)>)/ig;
-                json = JSON.parse(respuesta.replace(rex , "").replace("[","").replace("]",""));
-                
-                document.getElementById("nem").innerHTML= (Math.round(json.price_eur * 10000) / 10000)+" EUR";
-                document.getElementById("nem1").innerHTML= (Math.round(json.price_usd * 10000) / 10000)+" USD"; 
-                if ( json.percent_change_24h[0] == "-" ) 
-                	color = "<font color='red'>"+json.percent_change_24h+"</font>";
-                else 
-                 	color = "<font color='springgreen'>"+json.percent_change_24h+"</font>";
-                document.getElementById("nem_change").innerHTML= color;
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-            
-            },
-
-            timeout: 120000,
-        });
-}
-
-refrescar();
-//var timeout = setTimeout(reloadValues, 5000);
-
-function reloadValues () {
-        refrescar();
-        timeout = setTimeout(reloadValues, 5000);
-}
-
-</script>
+<script type="text/javascript" src="https://files.coinmarketcap.com/static/widget/currency.js"></script>
 <style>
 .button {
   color: #900;
@@ -447,11 +15,11 @@ function reloadValues () {
 }
 
 body {
-  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; font-style: normal; color: springgreen;
+  font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif; font-size: 12px; font-style: normal; color: black;
 }
 
 body {
-    background-color: black;
+    background-color: white;
 }
 
 h1 {
@@ -461,36 +29,37 @@ h1 {
 p {
     background-color: black;
 }
+
+
 </style>
 <div style="overflow: auto; width: 100%; height: 100%;">
 <table>
-<tr><td>       
+<tr><td>
 <table>
-<tr><td><b><u>COIN</u></b></td><td><font align="right"><b><u>PRICE</u></b></font></td><td><a href="https://play.google.com/store/apps/details?id=com.phonegap.mraddon.blockchainviewer" target="new"><img src="https://jirasupport.files.wordpress.com/2016/07/en_badge_web_generic.png" width="80px"></a></td><td><td><font align="right"><b><u>CHANGE(24h)</u></b></font></td><td><font align="right"><b><u> ONE WEEK STATS</u></b></font></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/bitcoin.png"> Bitcoin</b></td><td><font align="right" color="magenta"><div id="btc"></div></font></td><td><font align="right" color="springgreen"><div id="btc1"></div></font></td><td><td><font align="right"><div id="btc_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/bitcoin/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/ethereum.png"> Ethereum</b></td><td><font align="right" color="magenta"><div id="eth"></div></font></td><td><font align="right" color="springgreen"><div id="eth1"></div></font></td><td><td><font align="right"><div id="eth_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/ethereum/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1027.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/litecoin.png"> Litecoin</b></td><td><font align="right" color="magenta"><div id="ltc"></div></font></td><td><font align="right" color="springgreen"><div id="ltc1"></div></font></td><td><td><font align="right"><div id="ltc_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/litecoin/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/2.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/ethereum-classic.png"> Eth.Classic</b></td><td><font align="right" color="magenta"><div id="etc"></div></font></td><td><font align="right" color="springgreen"><div id="etc1"></div></font></td><td><td><font align="right"><div id="etc_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/ethereum-classic/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1321.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/voxels.png"> Voxel</b></td><td><font align="right" color="magenta"><div id="vox"></div></font></td><td><font align="right" color="springgreen"><div id="vox1"></div></font></td><td><td><font align="right"><div id="vox_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/voxels/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1208.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/gnosis-gno.png"> Gnosis</b></td><td><font align="right" color="magenta"><div id="gnosis"></div></font></td><td><font align="right" color="springgreen"><div id="gnosis1"></div></font></td><td><td><font align="right"><div id="gnosis_change"></div></font></td><td><a href="https://coinmarketcap.com/assets/gnosis-gno/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1659.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/golem-network-tokens.png"> Golem</b></td><td><font align="right" color="magenta"><div id="golem"></div></font></td><td><font align="right" color="springgreen"><div id="golem1"></div></font></td><td><td><font align="right"><div id="golem_change"></div></font></td><td><a href="https://coinmarketcap.com/assets/golem-network-tokens/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1455.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/augur.png"> Augur</b></td><td><font align="right" color="magenta"><div id="augur"></div></font></td><td><font align="right" color="springgreen"><div id="augur1"></div></font></td><td><td><font align="right"><div id="augur_change"></div></font></td><td><a href="https://coinmarketcap.com/assets/augur/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1104.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/ripple.png"> Ripple</b></td><td><font align="right" color="magenta"><div id="xrp"></div></font></td><td><font align="right" color="springgreen"><div id="xrp1"></div></font></td><td><td><font align="right"><div id="xrp_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/ripple/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/52.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/monero.png"> Monero</b></td><td><font align="right" color="magenta"><div id="xmr"></div></font></td><td><font align="right" color="springgreen"><div id="xmr1"></div></font></td><td><td><font align="right"><div id="xmr_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/monero/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/328.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/dash.png"> Dash</b></td><td><font align="right" color="magenta"><div id="dash"></div></font></td><td><font align="right" color="springgreen"><div id="dash1"></div></font></td><td><td><font align="right"><div id="dash_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/dash/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/131.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/steem.png"> Steem</b></td><td><font align="right" color="magenta"><div id="steem"></div></font></td><td><font align="right" color="springgreen"><div id="steem1"></div></font></td><td><td><font align="right"><div id="steem_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/steem/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1230.png" border=1></a></td></tr>
-<tr><td><b><img src="https://files.coinmarketcap.com/static/img/coins/16x16/nem.png"> NEM</b></td><td><font align="right" color="magenta"><div id="nem"></div></font></td><td><font align="right" color="springgreen"><div id="nem1"></div></font></td><td><td><font align="right"><div id="nem_change"></div></font></td><td><a href="https://coinmarketcap.com/currencies/nem/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/873.png" border=1></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="ethereum" data-base="EUR"  data-secondary="USD"></div></td><td><a href="https://coinmarketcap.com/currencies/ethereum/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1027.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="bitcoin" data-base="EUR"  data-secondary="USD"></div></td><td><a href="https://coinmarketcap.com/currencies/bitcoin/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="litecoin" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/litecoin/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/2.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="aragon" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/assets/aragon/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1680.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="bancor" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/assets/bancor/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1727.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="gnosis-gno" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/assets/gnosis-gno/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1659.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="golem-network-tokens" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/assets/golem-network-tokens/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1455.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="augur" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/assets/augur/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1104.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="ethereum-classic" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/ethereum-classic/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1321.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="voxels" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/voxels/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1208.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="ripple" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/ripple/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/52.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="qtum" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/qtum/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1684.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="monero" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/monero/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/328.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="dash" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/dash/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/131.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="steem" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/steem/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/1230.png" style="width:300px;"></a></td></tr>
+<tr><td><div class="coinmarketcap-currency-widget" data-currency="nem" data-base="EUR"  data-secondary="USD"></td><td><a href="https://coinmarketcap.com/currencies/nem/#charts" target="new"><img src="https://files.coinmarketcap.com/generated/sparklines/873.png" style="width:300px;"></a></td></tr>
 </table>
- <input type="button" name="REFRESH" value="REFRESH VALUES" onclick="javascript:refrescar();" class="button"></input><br>
+</td></tr>
 <table style="background-color: white; width:100%;">
-    <tr><td><center><a href="http://www.MrAddon.com" target="new"><img src="https://jirasupport.files.wordpress.com/2016/09/mraddonhorus.png?w=564" ></a></center></td><tr>
-</table> 
-</td><tr>
+    <tr><td><center><a href="http://www.MrAddon.com" target="new"><img src="https://jirasupport.files.wordpress.com/2016/09/mraddonhorus.png?w=564" ></a></center></td></tr>
+</table>        
 </table>                                                                                                                                                                   
 <b>@MrAddon App for Atlassian JIRA, Apple Iphone, Google Android</b> - Powered by <b>CoinMarketCap</b> <a href="https://coinmarketcap.com/api/" target="new">API</a> @2017
 </div>
-
-
 
 </body>
 </html>
